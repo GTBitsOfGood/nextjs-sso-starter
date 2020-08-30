@@ -1,19 +1,33 @@
 import React from "react";
 import clsx from "clsx";
 import PropTypes from "prop-types";
+import { useSession } from "next-auth/client";
 import NavLink from "../NavLink";
-import routes from "./routes";
-import styles from "./Header.module.css";
+import UserIcon from "./UserIcon/UserIcon";
+import { homeRoutes, authRoutes } from "./routes";
+import styles from "./Header.module.scss";
 
-const Header = ({ loggedIn, currentRoute }) => (
-  <div className={styles.root}>
-    {routes
-      .filter((route) => (loggedIn && route.auth) || (!loggedIn && !route.auth))
-      .map(({ name, link, atEnd }) => (
+const Header = ({ currentRoute }) => {
+  const [session, loading] = useSession();
+
+  const routes = [];
+  if (currentRoute.startsWith("/app")) {
+    routes.push(homeRoutes[0]);
+  } else {
+    routes.push(...homeRoutes);
+  }
+
+  if (!loading && session) {
+    routes.push(...authRoutes);
+  }
+
+  return (
+    <div className={styles.root}>
+      {routes.map(({ name, link }) => (
         <NavLink href={link} key={name}>
           <div
             className={clsx(
-              atEnd ? styles.endRoute : styles.route,
+              styles.route,
               currentRoute === link && styles.selected
             )}
           >
@@ -21,11 +35,12 @@ const Header = ({ loggedIn, currentRoute }) => (
           </div>
         </NavLink>
       ))}
-  </div>
-);
+      {!loading && <UserIcon session={session} />}
+    </div>
+  );
+};
 
 Header.propTypes = {
-  loggedIn: PropTypes.bool.isRequired,
   currentRoute: PropTypes.string.isRequired,
 };
 

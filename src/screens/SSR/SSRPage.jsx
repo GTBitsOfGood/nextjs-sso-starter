@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { helloWorld } from "../../actions/General";
-import classes from "./SSRPage.module.css";
+import classes from "./SSRPage.module.scss";
 
 const SSRPage = ({ message, errorMessage }) => {
   return (

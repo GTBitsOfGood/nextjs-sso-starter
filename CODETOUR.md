@@ -15,8 +15,6 @@ To keep things modular, the resources are divided into folders namely `/screens`
   * To fix this, screens are placed in a separate directory from pages, and each in their own directory.
     This makes it very simple to keep the logic, styles, and utilities for each page in their separate space.
   * Each screen behaves as a page, so `getInitialProps` and other Next.js helpers can be used.
-  * Each screen is also passed the prop `currentUser`, which is either null or an object containing
-    the user's data from the database.
 
 - ### [`/pages`](src/pages): Used for creating file-system routing to screens and creating API routes.
 
@@ -88,6 +86,7 @@ The server directory includes the backend actions used in API routes separated b
     * Each file should use the same name as the model, and include all related actions.
     * Each file needs to import `import mongoDB from "../index";`,
       and each function needs to include `await mongoDB();` (once per function) before any interactions are made with the database.
+  * For examples, see the regular [nextjs-starter](https://github.com/GTBitsOfGood/nextjs-starter/tree/master/server/mongodb).
 
 ## Utils Organization: [`utils/`](utils)
 
@@ -109,3 +108,10 @@ The public directory hosts any included files on the website.
 * [`/public`](public): Files placed in this directory can be accessed at `baseUrl/file`.
   Be **VERY** careful to not include a file with the same name as a page!
 * [`/public/static`](public/static): Files placed in this directory can be accessed at `baseUrl/static/file`.
+
+## Authentication:
+
+* [`[...nextauth].js`](src/pages/api/auth/[...nextauth].js): Is a catch-all API route to handle all authentication requests to Auth0.
+* [`pages/_app.jsx`](src/pages/_app.jsx): Includes a provider to pass session data to all pages, screens, and components.
+* [`actions/User.js`](src/actions/User.js): Includes helper functions for login and logout using url redirects.
+* All pages, screens, and components can access the session using `useSession`, as shown in [`HomePage.jsx`](src/screens/App/Home/HomePage.jsx).

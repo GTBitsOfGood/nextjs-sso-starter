@@ -1,35 +1,30 @@
 import React from "react";
-import PropTypes from "prop-types";
-import Router from "next/router";
-import { logout } from "../../../actions/User";
+import { useRouter } from "next/router";
+import { useSession } from "next-auth/client";
 import urls from "../../../../utils/urls";
-import classes from "./HomePage.module.css";
+import classes from "./HomePage.module.scss";
 
-const handleLogout = () =>
-  logout()
-    .then(() => Router.replace(urls.pages.index))
-    .catch(() => window.alert("An error occurred while trying to logout!"));
+const HomePage = () => {
+  const router = useRouter();
+  const [session, loading] = useSession();
 
-const HomePage = ({ currentUser }) => (
-  <div className={classes.root}>
-    <h2 className={classes.centerText}>
-      Welcome to our app, {currentUser.username}!
-    </h2>
-    <h3>
-      This page can only be accessed by logged-in users, because _app.js
-      reroutes users who are not logged-in away from this page.
-    </h3>
-    <button className={classes.bttn} type="button" onClick={handleLogout}>
-      Logout
-    </button>
-  </div>
-);
+  if (loading) {
+    return <h1>Loading...</h1>;
+  } else if (!session) {
+    router.replace(urls.pages.index);
+  }
 
-HomePage.propTypes = {
-  currentUser: PropTypes.shape({
-    id: PropTypes.string.isRequired,
-    username: PropTypes.string.isRequired,
-  }).isRequired,
+  return (
+    <div className={classes.root}>
+      <h2 className={classes.centerText}>
+        Welcome to our app, {session?.user?.name ?? "User"}!
+      </h2>
+      <h3>
+        This page can only be accessed by logged-in users, because _app.js
+        reroutes users who are not logged-in away from this page.
+      </h3>
+    </div>
+  );
 };
 
 export default HomePage;

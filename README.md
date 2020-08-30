@@ -1,17 +1,14 @@
-# nextjs-starter
+# nextjs-sso-starter
 
 ## Stack
 * React.js: Front-end
 * Next.js: API routes and server-side rendering
-* MongoDB: Permanently storing info
+* MongoDB: Permanently storing data
+* Next-Auth and Auth0: Single Sign On (SSO) setup
 * eslint: Automatically identifying and fixing code errors
 * prettier: Setting a common code style and fixing any issues
 
 ## Setup
-
-### Updating Env Vars
-- For dev, update `.env` and `next.config.js`
-- For production, add the env vars to your host, **NEVER** commit `.env` to your VCS
 
 ### MongoDB
 
@@ -25,14 +22,24 @@ A running instance of MongoDB is required this project.
   1. Create a MongoDB instance on MongoDB Atlas
   2. In Security → Network Access: add the IP address `0.0.0.0/0` (all IPs)
   3. In Security → Database Access: Add new database user
-  4. In Data Storage → Clusters: Find your cluster and click `Connect` → `Connect your application` and copy the connection string, set the username and password, and set this as `MONGO_DB` in `.env`
-- Create the `nextjs` database. (or choose another name, but make sure to change it in `.env`)
+  4. In Data Storage → Clusters: Find your cluster and click `Connect` →
+  `Connect your application` and copy the connection string, set the username and password,
+  and set this as `DATABASE_URL` in `.env.local`
 - It's very helpful to install MongoDB Compass to see your database contents
+
+### Auth0
+1. Create a `Regular Web Application` in Auth0.
+2. In the app settings, add `http://localhost:3000/api/auth/callback/auth0`
+  (and also the prod callback replacing http:///localhost:3000) to `Allowed Callback URLs`
 
 ### Node
 1. Clone this project to your computer
 2. Navigate to this project in terminal and enter `npm install`
-3. Rename `example.env` to `.env` and fill it out with the dev config
+3. Rename `.env.local.example` to `.env.local` and fill it out with the dev config
+
+### Updating Env Vars
+- For dev, update `.env.local`
+- For production, add the env vars to your host, **NEVER** commit `.env` to your VCS
 
 ## Running
 
@@ -45,10 +52,3 @@ To understand this code better, read the [Code Tour](/CODETOUR.md).
 1. Setup your host/vm and the necessary env vars
 2. Run `npm install`
 3. Run `npm run start`
-
-## Other Info
-
-### Styling
-- By default, this repository uses Next `^9.2.0` for styles, which includes native support for global CSS and CSS modules
-- However, this version only allows global css to be in `pages/_app.js`, which can cause issues with external packages
-- If you face this error, the solution is installing [`@zeit/next-css` and adding it to `next.config.js`](https://github.com/zeit/next-plugins/tree/master/packages/next-css), however you cannot use css modules and global css together with this package (and it defaults to global).
